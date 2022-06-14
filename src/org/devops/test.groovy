@@ -1,4 +1,4 @@
 package org.devops
-def p(cont){
-  print(cont)
+def pm(msg){
+  print(msg)
 }
