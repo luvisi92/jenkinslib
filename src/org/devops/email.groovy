@@ -18,5 +18,5 @@ def Email(status,emailUser){
             </body> 
             </html>  """,
             subject: "Jenkins-${JOB_NAME}项目构建信息 ",
-            to: emailUser    
+            to: 'huangjuanzi@zhisoutech.com'  
 }
