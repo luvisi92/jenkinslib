@@ -1,7 +1,7 @@
 package org.devops
 
 def Email(status,user){
-    emailext body: ''' <!DOCTYPE html> 
+    emailext body: """ <!DOCTYPE html> 
             <html> 
             <head> 
             <meta charset="UTF-8"> 
@@ -27,5 +27,5 @@ def Email(status,user){
                     <tr>  
                 </table> 
             </body> 
-            </html>''',subject: "构建结束", to: ${user}  
+            </html>""",subject: "构建结束", to: "${user}"
 }
