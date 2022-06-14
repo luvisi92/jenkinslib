@@ -1,6 +1,6 @@
 package org.devops
 
-def Email(status){
+def Email(){
     emailext body: ''' <p>项目名称：${JOB_NAME}</p>         
                        <p>构建编号：${BUILD_ID}</p> 
                        <p>构建状态: ${status} </p>                         
