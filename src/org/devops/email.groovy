@@ -24,5 +24,5 @@ def Email(){
                     <tr>  
                 </table> 
             </body> 
-            </html>''',subject: '构建结束', to: 'huangjuanzi@zhisoutech.com'  
+            </html>''',subject: "构建结束", to: 'huangjuanzi@zhisoutech.com'  
 }
