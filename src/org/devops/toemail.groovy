@@ -1,8 +1,8 @@
 package org.devops
 
 def Email(status,user){
-    mail to: '${user}',
-    subject: '流水线邮件',
+    mail to: "${user}",
+    subject: "流水线邮件",
     body: """ <!DOCTYPE html> 
             <html> 
             <head> 
