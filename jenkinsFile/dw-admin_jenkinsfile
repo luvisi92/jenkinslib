@@ -2,7 +2,7 @@
 @Library('jenkinslib') _
 
 def toemail = new org.devops.toemail()
-def servers=['19','30']
+//def servers=['19','30']
 
 pipeline {
     agent {label 'master'}
@@ -16,9 +16,9 @@ pipeline {
         user="huangjuanzi@zhisoutech.com"    //接收人邮箱
     }
     
-    //parameters{
-       // extendedChoice( name: 'servers',type: 'PT_CHECKBOX',description: '需要部署的服务器',quoteValue: false,  saveJSONParameterToFile: false,value: '19,30',descriptionPropertyValue: '19,30' )       // servers.tokenize(',')
-    //}
+    parameters{
+        extendedChoice( name: 'servers',type: 'PT_CHECKBOX',description: '需要部署的服务器',quoteValue: false,  saveJSONParameterToFile: false,value: '19,30',descriptionPropertyValue: '19,30' )       // servers.tokenize(',')
+    }
     
     stages {
         
@@ -36,25 +36,27 @@ pipeline {
                  }
         }
         
-        stage('更新文件') {
+        stage('停止项目 ') {
             steps {
                 script{
-                    for (host in servers) {
-                        echo "隐藏步骤备用 "
-                       // sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(execCommand: """cd /data/$dir 
-//mv  $project-0.0.1-SNAPSHOT.jar  padmin.jar""", patternSeparator: '[, ]+', remoteDirectory: "$dir", removePrefix: "$source/target", sourceFiles: "$source/target/*.jar")])])
+                    、、echo "隐藏步骤备用 "
+                    for (host in servers.tokenize(',')) {
+                        echo "进入for循环"
+                        //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ps -ef | grep padmin  |grep -v grep | cut -c 9-15 | xargs kill -s 9', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                     }
                 }
             }
         }
         
-        stage('停止项目 ') {
+        stage('更新文件') {
             steps {
                 script{
-                    echo "隐藏步骤备用 "
-                    //for (host in servers) {
-                        //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ps -ef | grep padmin  |grep -v grep | cut -c 9-15 | xargs kill -s 9', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-                    //}
+                    //echo "隐藏步骤备用 "
+                    for (host in servers.tokenize(',')) {
+                        echo "进入for循环"
+                       // sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(execCommand: """cd /data/$dir 
+//mv  $project-0.0.1-SNAPSHOT.jar  padmin.jar""", patternSeparator: '[, ]+', remoteDirectory: "$dir", removePrefix: "$source/target", sourceFiles: "$source/target/*.jar")])])
+                    }
                 }
             }
         }
@@ -63,7 +65,8 @@ pipeline {
             steps {
                 script{
                     echo "隐藏步骤备用 "
-                    for (host in servers) {
+                    for (host in tokenize(',')) {
+                        echo "进入for循环"
                        //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /data/hw/
  //nohup java -Xms512m -Xmx2g -jar padmin.jar --spring.profiles.active=test>> /data/hw/logs/padmin.out &''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                     }
