@@ -1,0 +1,91 @@
+#!groovy
+@Library('jenkinslib') _
+
+def toemail = new org.devops.toemail()
+def servers=['19','30']
+
+pipeline {
+    agent any
+    
+    environment {
+        code_url="zs_framework/trunk/zs-server"       //主版本 
+        // code_url="zs_framework/branches/20220428/zs-server"    //分支版本 
+        project="dw-admin"    //项目名称，杀进程、包名 均是，如不一致请更改
+        source="dw-admin"    // sourceFiles、removePrefix  一般通用   
+        dir="hw/"            //上级目录是 /data,即当前是 /data/hw
+        user="huangjuanzi@zhisoutech.com"    //接收人邮箱
+    }
+    
+    //parameters{
+       // extendedChoice( name: 'servers',type: 'PT_CHECKBOX',description: '需要部署的服务器',quoteValue: false,  saveJSONParameterToFile: false,value: '19,30',descriptionPropertyValue: '19,30' )       // servers.tokenize(',')
+    //}
+    
+    stages {
+        
+        stage('检出代码') {
+            steps {
+                echo "隐藏步骤备用 "
+                //checkout([$class: 'SubversionSCM', locations: [[credentialsId: "$svn_auth", local: '.', remote: "$svn_address/$code_url"]]])
+                }
+        }
+    
+        stage('打包') {
+            steps {
+                //sh 'mvn clean package'
+                echo "隐藏步骤备用 "
+                 }
+        }
+        
+        stage('更新文件') {
+            steps {
+                script{
+                    for (host in servers) {
+                        echo "隐藏步骤备用 "
+                       // sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(execCommand: """cd /data/$dir 
+//mv  $project-0.0.1-SNAPSHOT.jar  padmin.jar""", patternSeparator: '[, ]+', remoteDirectory: "$dir", removePrefix: "$source/target", sourceFiles: "$source/target/*.jar")])])
+                    }
+                }
+            }
+        }
+        
+        stage('停止项目 ') {
+            steps {
+                script{
+                    echo "隐藏步骤备用 "
+                    //for (host in servers) {
+                        //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ps -ef | grep padmin  |grep -v grep | cut -c 9-15 | xargs kill -s 9', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                    //}
+                }
+            }
+        }
+        
+        stage('启动项目 ') {
+            steps {
+                script{
+                    echo "隐藏步骤备用 "
+                    for (host in servers) {
+                       //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /data/hw/
+ //nohup java -Xms512m -Xmx2g -jar padmin.jar --spring.profiles.active=test>> /data/hw/logs/padmin.out &''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                    }
+                }
+           }
+        }
+    }
+    
+    post {
+        success {
+            script{
+                toemail.Email("构建成功","$user")
+            }
+        }
+        
+        failure {
+            script{
+                toemail.Email("构建失败","$user")
+            }
+        }
+
+    }
+        
+        
+}
