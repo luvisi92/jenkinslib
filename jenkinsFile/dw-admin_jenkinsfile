@@ -16,9 +16,9 @@ pipeline {
         user="huangjuanzi@zhisoutech.com"    //接收人邮箱
     }
     
-    parameters{
-        extendedChoice( name: 'servers',type: 'PT_CHECKBOX',description: '需要部署的服务器',quoteValue: false,  saveJSONParameterToFile: false,value: '19,30',descriptionPropertyValue: '19,30' )       // servers.tokenize(',')
-    }
+    //parameters{
+        //extendedChoice( name: 'servers',type: 'PT_CHECKBOX',description: '需要部署的服务器',quoteValue: false,  saveJSONParameterToFile: false,value: '19,30',descriptionPropertyValue: '19,30' )       // servers.tokenize(',')
+    //}
     
     stages {
         
@@ -67,10 +67,12 @@ pipeline {
                        //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /data/hw/
  //nohup java -Xms512m -Xmx2g -jar padmin.jar --spring.profiles.active=test>> /data/hw/logs/padmin.out &''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                    // }
-                }
-           }
+               }
+            }
         }
+       
     }
+    
     
     post {
         always {
@@ -85,6 +87,7 @@ pipeline {
         success {
             echo "成功了 "
         }
+        
     }
         
         
