@@ -63,10 +63,10 @@ pipeline {
             steps {
                 script{
                     echo "隐藏步骤备用 "
-                    for (host in servers) {
+                    //for (host in servers.tokenize(',')) {
                        //sshPublisher(publishers: [sshPublisherDesc(configName: '.19', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /data/hw/
  //nohup java -Xms512m -Xmx2g -jar padmin.jar --spring.profiles.active=test>> /data/hw/logs/padmin.out &''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-                    }
+                   // }
                 }
            }
         }
