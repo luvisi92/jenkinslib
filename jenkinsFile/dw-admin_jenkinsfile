@@ -10,10 +10,10 @@ pipeline {
     environment {
         code_url="zs_framework/trunk/zs-server"       //主版本 
         // code_url="zs_framework/branches/20220428/zs-server"    //分支版本 
-        project="dw-admin"
+        project="dw-admin"   //项目名称，杀进程、包名 均是，如不一致请更改
         source="dw-admin"    // sourceFiles、removePrefix  一般通用   
         dir="hw/"            //上级目录是 /data,即当前是 /data/hw
-        user="huangjuanzi@zhisoutech.com"
+        user="huangjuanzi@zhisoutech.com"    //接收人邮箱
     }
     
     parameters{
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script{
                     for (host in servers) {
-                        //echo "隐藏步骤备用 "
+                        // echo "隐藏步骤备用 "
                         sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(execCommand: """cd /data/$dir 
 mv  $project-0.0.1-SNAPSHOT.jar  padmin.jar""", patternSeparator: '[, ]+', remoteDirectory: "$dir", removePrefix: "$source/target", sourceFiles: "$source/target/*.jar")])])
                     }
@@ -74,20 +74,16 @@ mv  $project-0.0.1-SNAPSHOT.jar  padmin.jar""", patternSeparator: '[, ]+', remot
     
     post {
         always {
-           // mail to: 'huangjuanzi@zhisoutech.com',subject: '流水线邮件', body: 'hhh'
-            //def transportClass = javax.mail.Session.getDefaultInstance(java.lang.System.getProperties(), (javax.mail.Authenticator)null).getTransport(new javax.mail.internet.InternetAddress("ppolivka@xxx.com")).getClass();
-            //echo transportClass.toString();
-            //emailext ( body: 'hhh', subject: '流水线邮件', to: '987162919@qq.com', from: 'huangjuanzi@zhisoutech.com' )
             script{
                 echo "结束了 "
-                toemail.Email("构建成功","huangjuanzi@zhisoutech.com")
+                toemail.Email("构建成功","$user")
             }
         }
         failure {
             echo "失败了 "
         }
         success {
-            echo "成功成功了 "
+            echo "成功了 "
         }
     }
         
