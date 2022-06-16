@@ -5,7 +5,7 @@ def toemail = new org.devops.toemail()
 def servers=['19','30']
 
 pipeline {
-    agent {label 'dw19'}
+    agent {label 'master'}
     
     environment {
         code_url="zs_framework/trunk/zs-server"       //主版本 
