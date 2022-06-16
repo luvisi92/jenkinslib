@@ -50,7 +50,7 @@ pipeline {
         stage('更新文件') {
             steps {
                 script{
-                    for (host in servers) {
+                    for (host in servers.tokenize(',')) {
                          echo "隐藏步骤备用 "
                         //sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(execCommand: """cd /data/$dir 
 //mv  $project-0.0.1-SNAPSHOT.jar  padmin.jar""", patternSeparator: '[, ]+', remoteDirectory: "$dir", removePrefix: "$source/target", sourceFiles: "$source/target/*.jar")])])
