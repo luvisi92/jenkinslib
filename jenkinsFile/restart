@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+    
+    parameters{
+        extendedChoice( description: '项目', name: 'project', type: 'PT_SINGLE_SELECT', value: 'service1,service2,service3,service4,dw-im,hwmall-service,common-extranet-service,dw-sendmessage-im,receive-alarm,handle-alarm,receive-tokamak,handle-tokamak,face-receive,face-library,face-handle,common-job,ldk-ai,snap-image,spotCheckImage' )
+        string( description: '服务器   (多服务期间‘ , ’号分隔，可连接：8,19,22,30,32,34,39,120)', name: 'servers' )
+        extendedChoice( name: 'step', type: 'PT_CHECKBOX', value: '停止,启动')
+
+    }
+    
+    stages {
+        
+        stage('项目信息') {
+            steps {
+                echo "处理项目 ： $project "
+            }
+        }
+
+        stage('停止项目') {
+            steps {
+                script{
+                    if("${params.step}" =~ "停止" ) {
+                        for (host in servers.tokenize(',')) {
+                            sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: """ 
+                            ps -ef | grep ${project} |grep -v grep | cut -c 9-15 | xargs kill -s 9""", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('启动项目 ') {
+            steps {
+                script{
+                    if("${params.step}" =~ "启动" ) {
+                        if("${project}"=="common-job" || "${project}"=="dw-im" ){
+                            for (host in servers.tokenize(',')) {
+                                sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: """ source /etc/profile 
+                                cd /data/hw/${project}/bin
+                                ./startup.sh """, execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+                            }    
+                        }
+                        
+                        else if("${project}" =~ "face-" ){
+                            for (host in servers.tokenize(',')) {
+                                sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: """ source /etc/profile 
+                                cd /data/hw-face/${project}
+                                nohup java -Xms512m -Xmx2g -jar ${project}-huawei.jar>> ${project}.out & """, execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+                            }    
+                        }
+                        
+                        else{
+                            for (host in servers.tokenize(',')) {
+                                sshPublisher(publishers: [sshPublisherDesc(configName: "$host", transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: """source /etc/profile 
+                                cd /data/hw 
+                                nohup java -Xms512m -Xmx2g -jar ${project}.jar --spring.profiles.active=test>> logs/${project}.out & """, execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+    
+    }    
+        
+}
